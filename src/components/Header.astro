@@ -1,0 +1,157 @@
+---
+// Header.astro — 顶部导航组件
+// 用途：显示 Logo、一级导航菜单和搜索框
+// Props:
+//   - currentPath: 当前页面路径（可选），用于高亮当前导航项
+
+import Search from './Search.astro';
+
+export interface Props {
+  currentPath?: string;
+}
+
+const { currentPath = '' } = Astro.props;
+
+// 导航配置：名称 → 路径
+const navItems = [
+  { name: '首页', path: '/' },
+  { name: '学习路线', path: '/learning-path' },
+  { name: '质量基础', path: '/quality-basics' },
+  { name: '质量工具', path: '/quality-tools' },
+  { name: '统计分析', path: '/statistics' },
+  { name: '质量体系', path: '/quality-systems' },
+  { name: '制造过程', path: '/manufacturing-process' },
+  { name: '供应商质量', path: '/supplier-quality' },
+  { name: '客户质量', path: '/customer-quality' },
+  { name: '可靠性', path: '/reliability' },
+  { name: '实验室', path: '/lab' },
+  { name: 'AI+质量', path: '/ai-quality' },
+  { name: '案例分析', path: '/case-studies' },
+  { name: '资源中心', path: '/resources' },
+  { name: '职业发展', path: '/career' },
+];
+
+// 判断导航项是否高亮：精确匹配或以分类路径开头
+function isActive(itemPath: string): boolean {
+  if (itemPath === '/') return currentPath === '/';
+  return currentPath.startsWith(itemPath);
+}
+---
+
+<header class="bg-white shadow-sm sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <!-- Logo -->
+      <a href="/" class="flex items-center space-x-2 shrink-0">
+        <span class="text-xl font-bold text-[#1a3a5c]">QE Learning</span>
+        <span class="hidden sm:inline text-sm text-gray-500">| 质量工程师学习平台</span>
+      </a>
+
+      <!-- 桌面端导航 - 滚动容器 -->
+      <nav class="hidden lg:flex items-center space-x-1 overflow-x-auto max-w-[60%] scrollbar-hide" id="desktop-nav">
+        {
+          navItems.map((item) => (
+            <a
+              href={item.path}
+              class:list={[
+                'px-2.5 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-colors',
+                isActive(item.path)
+                  ? 'text-[#e67e22] bg-orange-50'
+                  : 'text-gray-600 hover:text-[#1a3a5c] hover:bg-gray-50',
+              ]}
+            >
+              {item.name}
+            </a>
+          ))
+        }
+      </nav>
+
+      <!-- 右侧：搜索 + 汉堡按钮 -->
+      <div class="flex items-center space-x-3">
+        <!-- Pagefind 搜索框（桌面端） -->
+        <div class="hidden md:block w-48 lg:w-56">
+          <Search />
+        </div>
+
+        <!-- 汉堡菜单按钮（移动端） -->
+        <button
+          id="menu-toggle"
+          class="lg:hidden p-2 rounded-md text-gray-600 hover:text-[#1a3a5c] hover:bg-gray-100 focus:outline-none"
+          aria-label="打开菜单"
+          aria-expanded="false"
+        >
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" id="menu-icon">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" id="menu-open-icon" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" id="menu-close-icon" class="hidden" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- 移动端搜索框（在导航下方） -->
+    <div class="md:hidden pb-3">
+      <Search />
+    </div>
+  </div>
+
+  <!-- 移动端下拉菜单 -->
+  <div id="mobile-menu" class="lg:hidden hidden bg-white border-t border-gray-200 shadow-lg max-h-[70vh] overflow-y-auto">
+    <div class="px-4 py-3 space-y-1">
+      {
+        navItems.map((item) => (
+          <a
+            href={item.path}
+            class:list={[
+              'block px-3 py-2 text-sm font-medium rounded-md transition-colors',
+              isActive(item.path)
+                ? 'text-[#e67e22] bg-orange-50'
+                : 'text-gray-600 hover:text-[#1a3a5c] hover:bg-gray-50',
+            ]}
+          >
+            {item.name}
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</header>
+
+<script>
+  // 移动端菜单切换
+  const toggleBtn = document.getElementById('menu-toggle');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const openIcon = document.getElementById('menu-open-icon');
+  const closeIcon = document.getElementById('menu-close-icon');
+
+  if (toggleBtn && mobileMenu) {
+    toggleBtn.addEventListener('click', () => {
+      const isOpen = mobileMenu.classList.toggle('hidden');
+      toggleBtn.setAttribute('aria-expanded', !isOpen);
+      toggleBtn.setAttribute('aria-label', isOpen ? '打开菜单' : '关闭菜单');
+      if (openIcon) openIcon.classList.toggle('hidden');
+      if (closeIcon) closeIcon.classList.toggle('hidden');
+    });
+
+    // 点击导航项后自动关闭菜单
+    mobileMenu.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+        toggleBtn.setAttribute('aria-label', '打开菜单');
+        if (openIcon) openIcon.classList.remove('hidden');
+        if (closeIcon) closeIcon.classList.add('hidden');
+      });
+    });
+  }
+</script>
+
+<style>
+  /* 隐藏滚动条但保持可滚动 */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+</style>

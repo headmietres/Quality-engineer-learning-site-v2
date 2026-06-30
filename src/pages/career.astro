@@ -1,0 +1,200 @@
+---
+// career.astro — 职业发展页面
+// 用途：展示质量工程师的岗位成长路线，每个岗位可查看详情
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+interface CareerRole {
+  title: string;
+  abbreviation: string;
+  description: string;
+  responsibilities: string[];
+  skills: string[];
+  tools: string[];
+  salary: string;
+}
+
+const careerPath: CareerRole[] = [
+  {
+    title: '质量检验员',
+    abbreviation: 'QC',
+    description: '质量检验员是进入质量领域的基础岗位，负责产品检验、数据记录和现场质量控制。',
+    responsibilities: ['按检验标准执行来料/过程/出货检验', '填写检验记录表', '标识不合格品', '使用量具进行测量'],
+    skills: ['看懂工程图纸', '使用基本量具（卡尺、千分尺、高度规等）', '基础数据记录与分析'],
+    tools: ['卡尺、千分尺、高度规', '投影仪、三坐标测量机(基础)', 'Excel 数据记录'],
+    salary: '5,000 - 8,000 元/月',
+  },
+  {
+    title: '质量工程师',
+    abbreviation: 'QE',
+    description: '质量工程师是质量管理的核心执行层，负责过程控制、问题分析和持续改善。',
+    responsibilities: ['制定检验标准和 SIP', '处理内部质量异常', '主导 QC 改善活动', '参与 FMEA 和控制计划编制'],
+    skills: ['QC 七大手法', 'SPC 基础应用', '8D 报告编写', '根本原因分析'],
+    tools: ['SPC 软件', 'Minitab / JMP', 'FMEA 软件', 'QMS 系统'],
+    salary: '8,000 - 15,000 元/月',
+  },
+  {
+    title: '过程质量工程师',
+    abbreviation: 'PQE',
+    description: '过程质量工程师专注于制造过程的质量控制，预防问题发生，优化过程参数。',
+    responsibilities: ['过程审核与过程能力分析', '解决生产现场质量问题', '主导过程改善项目', '培训生产技术员'],
+    skills: ['过程审核（VDA 6.3）', 'Cp/Cpk 分析', 'DOE（实验设计）', '精益生产'],
+    tools: ['Minitab', 'Control Plan', 'PFMEA', '过程审核表'],
+    salary: '10,000 - 18,000 元/月',
+  },
+  {
+    title: '供应商质量工程师',
+    abbreviation: 'SQE',
+    description: '供应商质量工程师管理供应链端质量，确保来料质量符合要求，推动供应商持续改善。',
+    responsibilities: ['供应商准入审核与评估', 'PPAP 批准', '供应商绩效监控', 'SCAR 管理'],
+    skills: ['供应商审核技巧', 'PPAP 19 项要求', '合同与商务谈判', '跨组织沟通'],
+    tools: ['QSA/QPA 审核表', 'PPAP 文件包', 'SCAR 系统', '供应商门户'],
+    salary: '12,000 - 20,000 元/月',
+  },
+  {
+    title: '客户质量工程师',
+    abbreviation: 'CQE',
+    description: '客户质量工程师是客户与公司之间的质量桥梁，负责客户投诉处理和客户质量要求对接。',
+    responsibilities: ['客户投诉接收与处理', '8D 报告回复客户', '客户审核陪同', '客退品分析处理'],
+    skills: ['8D 方法论', '客户沟通与报告', 'Capa 系统管理', '英语读写能力'],
+    tools: ['8D 报告模板', 'Capa 系统', 'QMS', 'CRM 系统'],
+    salary: '12,000 - 22,000 元/月',
+  },
+  {
+    title: '高级质量工程师',
+    abbreviation: '高级QE',
+    description: '高级质量工程师是团队的技术核心，负责复杂问题解决、跨部门改善和新人指导。',
+    responsibilities: ['主导重大质量改善项目', '六西格玛黑带项目', '质量体系维护与优化', '培训与指导中级工程师'],
+    skills: ['六西格玛方法论', '高级统计分析', '项目管理', '领导力'],
+    tools: ['Minitab / JMP', '六西格玛工具集', 'QMS 系统', '项目管理软件'],
+    salary: '18,000 - 28,000 元/月',
+  },
+  {
+    title: '质量主管',
+    abbreviation: '质量主管',
+    description: '质量主管管理质量团队，协调资源，确保质量目标的达成。',
+    responsibilities: ['团队管理与绩效评估', '质量 KPI 监控', '跨部门协调', '质量成本管理'],
+    skills: ['团队管理', 'KPI 管理', '质量成本分析', '冲突解决'],
+    tools: ['KPI Dashboard', '质量成本分析系统', 'QMS', 'ERP 系统'],
+    salary: '20,000 - 30,000 元/月',
+  },
+  {
+    title: '质量经理',
+    abbreviation: '质量经理',
+    description: '质量经理搭建和维护质量管理体系，制定质量战略，推动组织质量文化。',
+    responsibilities: ['质量战略制定', '管理体系维护', '客户与认证机构沟通', '质量改善文化推动'],
+    skills: ['战略思维', '领导力', '财务与成本管理', '变革管理'],
+    tools: ['QMS 系统', 'BI 分析工具', 'BSC 平衡计分卡', '绩效管理系统'],
+    salary: '25,000 - 40,000 元/月',
+  },
+  {
+    title: '质量总监',
+    abbreviation: '质量总监',
+    description: '质量总监是公司质量最高负责人，参与企业战略决策，建立质量竞争优势。',
+    responsibilities: ['企业质量战略制定', '组织质量文化建设', '质量投资决策', '高层客户关系管理'],
+    skills: ['战略规划', '卓越绩效模式', '组织变革', '行业影响力'],
+    tools: ['经营分析系统', '质量战略框架', '平衡计分卡', '对标分析'],
+    salary: '40,000 - 80,000+ 元/月',
+  },
+];
+
+// 简化岗位路线图（箭头连接）
+const routeAbbreviations = ['QC', 'QE', 'PQE', 'SQE/CQE', '高级QE', '质量主管', '质量经理', '质量总监'];
+---
+
+<BaseLayout title="职业发展" description="质量工程师的职业成长路线与岗位技能指南" currentPath="/career">
+  <!-- 页面头部 -->
+  <section class="bg-gradient-to-r from-[#1a3a5c] to-[#225577] text-white py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h1 class="text-3xl md:text-4xl font-bold mb-4">职业发展</h1>
+      <p class="text-blue-100 text-lg">质量工程师的岗位成长路线 — 了解每个岗位的职责、技能要求和发展方向。</p>
+    </div>
+  </section>
+
+  <!-- 岗位路线图（流程图形式） -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="flex flex-wrap items-center justify-center gap-2 md:gap-3">
+      {
+        routeAbbreviations.map((abbr, index) => (
+          <>
+            <span class="px-3 py-1.5 bg-[#1a3a5c] text-white text-xs md:text-sm font-medium rounded-full whitespace-nowrap">
+              {abbr}
+            </span>
+            {
+              index < routeAbbreviations.length - 1 && (
+                <span class="text-[#e67e22] text-lg font-bold">→</span>
+              )
+            }
+          </>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- 岗位详情卡片 -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+    <div class="space-y-6">
+      {
+        careerPath.map((role) => (
+          <details class="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow group open:border-[#e67e22]">
+            <summary class="cursor-pointer p-5 flex items-center justify-between list-none">
+              <div>
+                <h2 class="text-lg font-semibold text-[#1a3a5c] group-open:text-[#e67e22] transition-colors">
+                  {role.title}
+                  <span class="text-sm font-normal text-gray-400 ml-2">({role.abbreviation})</span>
+                </h2>
+                <p class="text-sm text-gray-500 mt-1">{role.description}</p>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="text-sm font-medium text-[#e67e22]">{role.salary}</span>
+                <svg class="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </summary>
+            <div class="px-5 pb-5 border-t border-gray-100 pt-4">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- 核心职责 -->
+                <div>
+                  <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">核心职责</h3>
+                  <ul class="space-y-1.5">
+                    {role.responsibilities.map((item) => (
+                      <li class="text-sm text-gray-700 flex items-start">
+                        <span class="text-[#e67e22] mr-2 shrink-0">▸</span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <!-- 核心技能 -->
+                <div>
+                  <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">核心技能</h3>
+                  <ul class="space-y-1.5">
+                    {role.skills.map((item) => (
+                      <li class="text-sm text-gray-700 flex items-start">
+                        <span class="text-[#e67e22] mr-2 shrink-0">▸</span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <!-- 常用工具 -->
+                <div>
+                  <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">常用工具</h3>
+                  <ul class="space-y-1.5">
+                    {role.tools.map((item) => (
+                      <li class="text-sm text-gray-700 flex items-start">
+                        <span class="text-[#e67e22] mr-2 shrink-0">▸</span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </details>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,93 @@
+---
+// LearningPath.astro — 学习路线时间线组件
+// 用途：展示学习路线的各个阶段，使用垂直时间线样式
+// Props:
+//   - stages: 阶段数组，每个阶段包含 title, description, duration, topics（知识点列表）
+
+export interface Stage {
+  title: string;
+  description: string;
+  duration: string;
+  topics: string[];
+  skills?: string; // 阶段结束具备的能力（可选）
+}
+
+export interface Props {
+  stages: Stage[];
+}
+
+const { stages } = Astro.props;
+const stageColors = [
+  'border-[#1a3a5c]',
+  'border-[#e67e22]',
+  'border-[#2ecc71]',
+  'border-[#3498db]',
+  'border-[#9b59b6]',
+  'border-[#e74c3c]',
+  'border-[#1abc9c]',
+  'border-[#f39c12]',
+];
+---
+
+<div class="relative">
+  <!-- 垂直时间线 -->
+  <div class="space-y-0">
+    {
+      stages.map((stage, index) => (
+        <div class="relative flex" key={index}>
+          <!-- 时间线节点 -->
+          <div class="flex flex-col items-center mr-4 md:mr-6">
+            <!-- 连线（上） -->
+            <div class={`w-0.5 h-8 ${index === 0 ? 'opacity-0' : 'bg-gray-300'}`}></div>
+            <!-- 节点圆 -->
+            <div class={`w-5 h-5 rounded-full border-4 bg-white ${stageColors[index % stageColors.length]} shrink-0`}></div>
+            <!-- 连线（下） -->
+            <div class={`w-0.5 flex-1 ${index === stages.length - 1 ? 'opacity-0' : 'bg-gray-300'}`}></div>
+          </div>
+
+          <!-- 阶段内容卡片 -->
+          <div class={`flex-1 pb-10 ${index === stages.length - 1 ? 'pb-0' : ''}`}>
+            <div class="bg-white rounded-lg border border-gray-200 p-5 shadow-sm hover:shadow-md transition-shadow">
+              <!-- 阶段顶部：标题 + 时长 -->
+              <div class="flex items-start justify-between mb-3">
+                <h3 class="text-lg font-semibold text-[#1a3a5c]">
+                  <span class="text-[#e67e22] font-bold mr-2">{String(index + 1).padStart(2, '0')}</span>
+                  {stage.title}
+                </h3>
+                <span class="shrink-0 ml-2 text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                  {stage.duration}
+                </span>
+              </div>
+
+              <!-- 阶段描述 -->
+              <p class="text-sm text-gray-600 leading-relaxed mb-3">{stage.description}</p>
+
+              <!-- 核心知识点列表 -->
+              <div class="mb-3">
+                <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">核心知识点</span>
+                <ul class="mt-1.5 space-y-1">
+                  {stage.topics.map((topic) => (
+                    <li class="flex items-start text-sm text-gray-700">
+                      <span class="text-[#e67e22] mr-2">▸</span>
+                      {topic}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <!-- 阶段结束能力 -->
+              {
+                stage.skills && (
+                  <div class="text-xs text-gray-500 bg-blue-50 border border-blue-100 rounded px-3 py-2">
+                    <span class="font-medium text-[#1a3a5c]">🎯 阶段目标：</span>
+                    {stage.skills}
+                  </div>
+                )
+              }
+            </div>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</div>

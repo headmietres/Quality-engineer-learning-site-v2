@@ -1,0 +1,53 @@
+---
+// Footer.astro — 底部组件
+// 用途：显示版权信息、友情链接区
+// 无需 Props
+---
+
+<footer class="bg-[#1a3a5c] text-white mt-auto">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- 站点信息 -->
+      <div>
+        <h3 class="text-lg font-semibold mb-3">Quality Engineer Learning Site</h3>
+        <p class="text-sm text-gray-300 leading-relaxed">
+          面向制造业质量工程师的一站式学习平台。
+        </p>
+      </div>
+
+      <!-- 友情链接区（占位） -->
+      <div>
+        <h3 class="text-lg font-semibold mb-3">友情链接</h3>
+        <ul class="space-y-2 text-sm text-gray-300">
+          <li>
+            <a href="#" class="hover:text-[#e67e22] transition-colors">
+              ASQ（美国质量学会）
+            </a>
+          </li>
+          <li>
+            <a href="#" class="hover:text-[#e67e22] transition-colors">
+              IATF 官方
+            </a>
+          </li>
+          <!-- TODO: 替换为真实友情链接 -->
+          <li class="text-gray-500 italic text-xs">
+            （更多链接待添加）
+          </li>
+        </ul>
+      </div>
+
+      <!-- 关于 -->
+      <div>
+        <h3 class="text-lg font-semibold mb-3">关于本站</h3>
+        <p class="text-sm text-gray-300 leading-relaxed">
+          本站内容仅供学习参考，部分资料来源于公开标准与行业实践。
+        </p>
+      </div>
+    </div>
+
+    <!-- 版权信息 -->
+    <div class="border-t border-gray-600 mt-8 pt-6 text-center text-sm text-gray-400">
+      &copy; {new Date().getFullYear()} Quality Engineer Learning Site. All rights reserved.
+    </div>
+  </div>
+</footer>

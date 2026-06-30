@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 全局基础样式 */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-[#f4f6f9] text-gray-800 font-sans antialiased;
+}
+
+/* 文章内容样式 */
+.prose-content {
+  @apply max-w-[800px] mx-auto text-base leading-[1.8];
+}
+
+.prose-content h1 {
+  @apply text-3xl font-bold text-[#1a3a5c] mt-8 mb-4;
+}
+
+.prose-content h2 {
+  @apply text-2xl font-bold text-[#1a3a5c] mt-6 mb-3;
+}
+
+.prose-content h3 {
+  @apply text-xl font-semibold text-[#1a3a5c] mt-5 mb-2;
+}
+
+.prose-content p {
+  @apply mb-4;
+}
+
+.prose-content ul,
+.prose-content ol {
+  @apply mb-4 pl-6;
+}
+
+.prose-content ul {
+  @apply list-disc;
+}
+
+.prose-content ol {
+  @apply list-decimal;
+}
+
+.prose-content li {
+  @apply mb-1;
+}
+
+.prose-content blockquote {
+  @apply border-l-4 border-[#e67e22] pl-4 italic text-gray-600 my-4;
+}
+
+.prose-content code {
+  @apply bg-gray-100 px-1.5 py-0.5 rounded text-sm font-mono;
+}
+
+.prose-content pre {
+  @apply bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto my-4;
+}
+
+.prose-content pre code {
+  @apply bg-transparent p-0 text-inherit;
+}
+
+.prose-content a {
+  @apply text-[#e67e22] hover:text-[#c96a1c] underline;
+}
+
+.prose-content table {
+  @apply w-full border-collapse my-4;
+}
+
+.prose-content th,
+.prose-content td {
+  @apply border border-gray-300 px-3 py-2 text-left;
+}
+
+.prose-content th {
+  @apply bg-gray-100 font-semibold;
+}
+
+.prose-content img {
+  @apply max-w-full rounded-lg my-4;
+}

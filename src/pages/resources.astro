@@ -1,0 +1,84 @@
+---
+// resources.astro — 资源中心页面
+// 用途：展示可下载的质量工具模板和检查清单
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+interface Resource {
+  name: string;
+  type: string;
+  description: string;
+  file: string;
+}
+
+// 预设资源列表
+const resources: Resource[] = [
+  { name: '8D 报告模板', type: '模板', description: '标准 8D 问题解决报告模板，含 D1-D8 全部步骤的填写指导。', file: '/downloads/8d-template.xlsx' },
+  { name: 'FMEA 模板', type: '模板', description: 'PFMEA 与 DFMEA 通用模板，含 SOD 评分表与 RPN 计算。', file: '/downloads/fmea-template.xlsx' },
+  { name: 'APQP 模板', type: '模板', description: '先期产品质量策划全套文档模板，覆盖五个阶段的输出物。', file: '/downloads/apqp-template.xlsx' },
+  { name: 'PPAP 检查清单', type: '检查清单', description: 'PPAP 19 项提交要求的逐项检查表，确保文件包完整性。', file: '/downloads/ppap-checklist.xlsx' },
+  { name: 'SPC Excel 工具', type: 'Excel工具', description: '含 Xbar-R、Xbar-S、p-chart 等常用控制图的 Excel 计算模板。', file: '/downloads/spc-tool.xlsx' },
+  { name: 'MSA Excel 工具', type: 'Excel工具', description: 'GR&R 分析、偏倚研究、线性研究的 Excel 计算工具。', file: '/downloads/msa-tool.xlsx' },
+  { name: 'Control Plan 模板', type: '模板', description: '控制计划编制模板，含过程参数、控制方法、反应计划的填写示例。', file: '/downloads/control-plan-template.xlsx' },
+  { name: '检验记录表', type: '检查清单', description: '来料检验(IQC)、过程检验(IPQC)、最终检验(FQC)通用记录表。', file: '/downloads/inspection-record.xlsx' },
+  { name: 'Audit Checklist', type: '检查清单', description: 'VDA 6.3 过程审核与 IATF 16949 体系审核通用检查清单。', file: '/downloads/audit-checklist.xlsx' },
+];
+
+const typeColors: Record<string, string> = {
+  '模板': 'bg-blue-100 text-blue-700',
+  '检查清单': 'bg-green-100 text-green-700',
+  'Excel工具': 'bg-purple-100 text-purple-700',
+  '指南': 'bg-orange-100 text-orange-700',
+};
+---
+
+<BaseLayout title="资源中心" description="质量工程师常用模板、检查清单与工具的下载中心" currentPath="/resources">
+  <!-- 页面头部 -->
+  <section class="bg-gradient-to-r from-[#1a3a5c] to-[#225577] text-white py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h1 class="text-3xl md:text-4xl font-bold mb-4">资源中心</h1>
+      <p class="text-blue-100 text-lg">免费下载质量工程师常用模板、检查清单和工具。</p>
+    </div>
+  </section>
+
+  <!-- 资源卡片网格 -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {
+        resources.map((resource) => (
+          <div class="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow p-6 flex flex-col">
+            <!-- 类型标签 -->
+            <div class="mb-3">
+              <span class={`inline-block text-xs font-medium px-2 py-0.5 rounded ${typeColors[resource.type] || 'bg-gray-100 text-gray-600'}`}>
+                {resource.type}
+              </span>
+            </div>
+
+            <!-- 名称 -->
+            <h3 class="text-base font-semibold text-[#1a3a5c] mb-2">{resource.name}</h3>
+
+            <!-- 描述 -->
+            <p class="text-sm text-gray-600 leading-relaxed flex-1 mb-4">{resource.description}</p>
+
+            <!-- 下载按钮 -->
+            <a
+              href={resource.file}
+              class="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-[#e67e22] hover:bg-[#c96a1c] text-white text-sm font-medium rounded-lg transition-colors"
+              download
+            >
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              下载
+            </a>
+          </div>
+        ))
+      }
+    </div>
+
+    <!-- 暂无实际文件的说明 -->
+    <p class="text-center text-sm text-gray-400 mt-8">
+      // TODO: 将实际的模板文件放置在 <code>public/downloads/</code> 目录下
+    </p>
+  </section>
+</BaseLayout>

@@ -1,0 +1,169 @@
+---
+// learning-path.astro — 学习路线页面
+// 用途：展示完整的 8 阶段质量工程师学习路线，含时间线和阶段详情
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import LearningPath from '../components/LearningPath.astro';
+
+const learningStages = [
+  {
+    title: '质量基础',
+    description: '从零开始建立质量管理的基本概念，理解质量的定义与发展历程。这是每个质量工程师的起点，扎实的基础决定了未来的高度。',
+    duration: '第1-2周',
+    topics: [
+      '质量的演变：从检验到全面质量管理(TQM)',
+      '质量管理核心术语：合格/不合格、缺陷、偏差、防错',
+      'PDCA 循环与持续改进思维',
+      'GDT（几何尺寸与公差）基础',
+      '质量成本分析：预防成本、鉴定成本、失败成本',
+    ],
+    skills: '理解质量管理基本概念，能区分不同质量角色的职责，看懂工程图纸。',
+  },
+  {
+    title: 'QC七大手法',
+    description: 'QC七大手法是质量工程师的基本功，适用于日常数据分析、问题诊断和改善活动。这些工具简单但极其有效。',
+    duration: '第3-4周',
+    topics: [
+      '检查表（Check Sheet）：数据收集的标准化',
+      '层别法（Stratification）：从数据中找出规律',
+      '柏拉图（Pareto）：80/20 法则找到主要问题',
+      '鱼骨图（Fishbone）：系统性分析根本原因',
+      '5Why 分析法：追根究底的问题解决技巧',
+      '控制图（Control Chart）初步了解',
+    ],
+    skills: '能够独立使用 QC 七种工具分析现场质量问题，完成改善报告。',
+  },
+  {
+    title: 'SPC + MSA',
+    description: '统计过程控制(SPC)与测量系统分析(MSA)是质量工程师从经验型走向专业型的分水岭。掌握数据驱动的质量管理思维。',
+    duration: '第5-7周',
+    topics: [
+      '正态分布与数据统计基础',
+      'Cp / Cpk / Pp / Ppk 计算与解读',
+      '控制图的种类选择：Xbar-R, Xbar-S, p-chart, u-chart',
+      '异常判异准则（8大判异规则）',
+      'GR&R（量具重复性与再现性）分析',
+      '偏倚、线性与稳定性分析',
+    ],
+    skills: '能够独立完成 SPC 方案设计与 MSA 分析报告，正确解读过程能力。',
+  },
+  {
+    title: 'FMEA',
+    description: '失效模式与影响分析(FMEA)是预防性质量工具的核心。不仅是文档，更是基于团队智慧的预防控制方法。',
+    duration: '第8-9周',
+    topics: [
+      'FMEA 七步法详解',
+      'DFMEA（设计FMEA）与 PFMEA（过程FMEA）的区别',
+      'SOD 评分准则与 RPN 优先级',
+      '行动优先级(AP) 替代 RPN 的新思路',
+      'FMEA-MSR（监视与系统响应）',
+      '控制计划与 FMEA 的联动',
+    ],
+    skills: '能够独立主持 FMEA 会议，编写完整的 FMEA 文件并与控制计划关联。',
+  },
+  {
+    title: 'APQP + PPAP',
+    description: '先期产品质量策划(APQP)与生产件批准程序(PPAP)是汽车行业质量管理的核心流程，也是供应商质量管理的基石。',
+    duration: '第10-12周',
+    topics: [
+      'APQP 五个阶段的时间线与交付物',
+      '控制计划(Control Plan)的编制与评审',
+      'PPAP 19 项提交要求详解',
+      '零件提交保证书(PSW)的填写',
+      '量产前APQP vs 投产后APQP',
+      'Run @ Rate（产能运行验证）',
+    ],
+    skills: '能够主导 APQP 项目，独立完成 PPAP 文件包提交与客户批准。',
+  },
+  {
+    title: '质量体系',
+    description: '深入理解 ISO 9001、IATF 16949 等质量管理体系标准，掌握过程审核与体系维护技能。',
+    duration: '第13-16周',
+    topics: [
+      'ISO 9001:2015 核心条款解读',
+      'IATF 16949 汽车行业特殊要求(CSR)',
+      'VDA 6.3 过程审核标准',
+      '乌龟图与过程方法',
+      '内审员技能：审核计划、检查表、不符合项报告',
+      '管理评审与质量目标的制定',
+    ],
+    skills: '具备内审员资格，能独立完成过程审核与体系维护工作。',
+  },
+  {
+    title: 'SQE / CQE 专项',
+    description: '供应商质量工程师(SQE)与客户质量工程师(CQE)是两个重要的专业化方向，分别管理供应链端和客户端质量。',
+    duration: '第17周+',
+    topics: [
+      '供应商开发、评估与准入流程',
+      '供应商审核：QSA (质量体系审核) 与 QPA (过程审核)',
+      'PPAP 批准流程与签署权限',
+      'SCAR（供应商纠正措施报告）管理',
+      '客户投诉处理流程：接收、分析、回复、闭环',
+      '8D 报告在客户投诉中的应用',
+      'Capa 系统管理',
+    ],
+    skills: '能够独立管理供应商质量或客户投诉全流程，具备跨组织沟通能力。',
+  },
+  {
+    title: '质量经理方向',
+    description: '从技术岗位走向管理岗位，需要培养战略思维、团队领导和组织变革能力。',
+    duration: '进阶',
+    topics: [
+      '质量战略制定与质量 KPI 体系',
+      '团队管理与教练技术',
+      '六西格玛绿带/黑带（DMAIC 方法论）',
+      '精益生产与质量管理的融合',
+      '数字化转型：质量管理系统(QMS)',
+      '卓越绩效模式与质量奖',
+    ],
+    skills: '具备质量团队管理和跨部门协作能力，能够推动组织质量文化变革。',
+  },
+];
+---
+
+<BaseLayout title="学习路线" description="从零基础到质量经理的完整学习路径" currentPath="/learning-path">
+  <!-- 页面头部 -->
+  <section class="bg-gradient-to-r from-[#1a3a5c] to-[#225577] text-white py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-3xl">
+        <h1 class="text-3xl md:text-4xl font-bold mb-4">质量工程师学习路线</h1>
+        <p class="text-blue-100 text-lg leading-relaxed">
+          从新人到高级质量工程师的系统成长路径。按阶段学习，每个阶段聚焦核心技能，
+          掌握后可进入下一阶段。建议每阶段投入 1-4 周时间。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 学习路线时间线 -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <LearningPath stages={learningStages} />
+  </section>
+
+  <!-- 学习建议 -->
+  <section class="bg-white border-t border-gray-200 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-2xl font-bold text-[#1a3a5c] mb-6 text-center">学习建议</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-[#f4f6f9] rounded-lg p-6">
+            <h3 class="font-semibold text-[#1a3a5c] mb-2">📖 理论与实践结合</h3>
+            <p class="text-sm text-gray-600 leading-relaxed">每个阶段的知识点都需要结合实际工作场景练习。建议在工作中找到对应问题应用所学。</p>
+          </div>
+          <div class="bg-[#f4f6f9] rounded-lg p-6">
+            <h3 class="font-semibold text-[#1a3a5c] mb-2">📝 完成每个阶段的输出物</h3>
+            <p class="text-sm text-gray-600 leading-relaxed">FMEA 文件、控制计划、8D报告、MSA报告等，建立起自己的作品集。</p>
+          </div>
+          <div class="bg-[#f4f6f9] rounded-lg p-6">
+            <h3 class="font-semibold text-[#1a3a5c] mb-2">🤝 边学边考</h3>
+            <p class="text-sm text-gray-600 leading-relaxed">建议在学习过程中考取相关证书：质量工程师、六西格玛绿带/黑带、内审员等。</p>
+          </div>
+          <div class="bg-[#f4f6f9] rounded-lg p-6">
+            <h3 class="font-semibold text-[#1a3a5c] mb-2">🔄 定期回顾</h3>
+            <p class="text-sm text-gray-600 leading-relaxed">质量工具需要反复使用才能熟练。每3个月回顾前序知识，温故而知新。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

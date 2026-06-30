@@ -1,0 +1,65 @@
+---
+// Hero.astro — 首页大横幅组件
+// 用途：展示主标题、副标题和行动号召按钮
+// Props:
+//   - title: 主标题
+//   - subtitle: 副标题
+//   - primaryBtnText: 主按钮文字
+//   - primaryBtnLink: 主按钮链接
+//   - secondaryBtnText: 次按钮文字（可选）
+//   - secondaryBtnLink: 次按钮链接（可选）
+
+export interface Props {
+  title: string;
+  subtitle: string;
+  primaryBtnText: string;
+  primaryBtnLink: string;
+  secondaryBtnText?: string;
+  secondaryBtnLink?: string;
+}
+
+const { title, subtitle, primaryBtnText, primaryBtnLink, secondaryBtnText, secondaryBtnLink } = Astro.props;
+---
+
+<section class="relative overflow-hidden bg-gradient-to-br from-[#1a3a5c] via-[#1e4668] to-[#225577] text-white">
+  <!-- 几何装饰背景 -->
+  <div class="absolute inset-0 opacity-10" aria-hidden="true">
+    <svg class="w-full h-full" viewBox="0 0 1440 320" preserveAspectRatio="none">
+      <path fill="#ffffff" d="M0,224L60,213.3C120,203,240,181,360,181.3C480,181,600,203,720,202.7C840,203,960,181,1080,176C1200,171,1320,181,1380,186.7L1440,192L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"/>
+    </svg>
+  </div>
+
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+    <div class="text-center max-w-3xl mx-auto">
+      <!-- 主标题 -->
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight mb-6">
+        {title}
+      </h1>
+
+      <!-- 副标题 -->
+      <p class="text-base sm:text-lg md:text-xl text-blue-100 leading-relaxed mb-10">
+        {subtitle}
+      </p>
+
+      <!-- 按钮组 -->
+      <div class="flex flex-col sm:flex-row justify-center gap-4">
+        <a
+          href={primaryBtnLink}
+          class="inline-flex items-center justify-center px-8 py-3 bg-[#e67e22] hover:bg-[#c96a1c] text-white font-semibold rounded-lg transition-colors shadow-lg hover:shadow-xl"
+        >
+          {primaryBtnText}
+        </a>
+        {
+          secondaryBtnText && secondaryBtnLink && (
+            <a
+              href={secondaryBtnLink}
+              class="inline-flex items-center justify-center px-8 py-3 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-lg border border-white/30 transition-colors"
+            >
+              {secondaryBtnText}
+            </a>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</section>

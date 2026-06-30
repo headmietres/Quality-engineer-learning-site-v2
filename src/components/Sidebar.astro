@@ -1,0 +1,62 @@
+---
+// Sidebar.astro — 文章侧边栏组件
+// 用途：在文章详情页显示同分类下的其他文章列表
+// Props:
+//   - currentSlug: 当前文章 slug，用于排除自身
+//   - category: 分类名称
+//   - articles: 同分类文章列表（含 slug 和 title）
+
+export interface ArticleRef {
+  slug: string;
+  title: string;
+  date?: string;
+}
+
+export interface Props {
+  currentSlug: string;
+  category: string;
+  articles: ArticleRef[];
+}
+
+const { currentSlug, category, articles } = Astro.props;
+// 排除当前文章，取前 5 篇
+const relatedArticles = articles.filter((a) => a.slug !== currentSlug).slice(0, 5);
+---
+
+<aside class="bg-white rounded-lg border border-gray-200 p-5">
+  <h3 class="text-sm font-semibold text-[#1a3a5c] uppercase tracking-wider mb-4">
+    同分类文章
+  </h3>
+
+  {
+    relatedArticles.length > 0 ? (
+      <ul class="space-y-3">
+        {relatedArticles.map((article) => (
+          <li>
+            <a
+              href={`/${category}/${article.slug}`}
+              class="block text-sm text-gray-600 hover:text-[#e67e22] transition-colors leading-relaxed"
+            >
+              {article.title}
+            </a>
+            {
+              article.date && (
+                <span class="text-xs text-gray-400">{article.date}</span>
+              )
+            }
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="text-sm text-gray-400">暂无其他文章</p>
+    )
+  }
+
+  <!-- 返回分类列表 -->
+  <a
+    href={`/${category}`}
+    class="block mt-4 text-sm text-[#e67e22] hover:text-[#c96a1c] font-medium transition-colors"
+  >
+    ← 返回列表
+  </a>
+</aside>

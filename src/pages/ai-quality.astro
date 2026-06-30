@@ -1,0 +1,103 @@
+---
+// ai-quality.astro — AI+质量页面
+// 用途：展示 AI 在制造业质量领域的应用场景
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+interface AIScenario {
+  title: string;
+  description: string;
+  icon: string;
+}
+
+const scenarios: AIScenario[] = [
+  {
+    title: 'AI 生成 Control Plan',
+    description: '基于产品设计信息、FMEA 数据和历史质量数据，AI 自动生成控制计划草案，大幅减少人工编写时间。',
+    icon: '📋',
+  },
+  {
+    title: 'AI 编写 8D 报告',
+    description: '输入问题描述和基础数据，AI 辅助完成 8D 各步骤的填写，包括问题描述、根源分析、纠正措施和效果验证。',
+    icon: '📝',
+  },
+  {
+    title: 'AI 分析 SPC 趋势',
+    description: '实时监控控制图，AI 自动识别异常模式（判异准则），提前预警过程偏移，帮助工程师及时干预。',
+    icon: '📊',
+  },
+  {
+    title: 'AI 辅助 FMEA',
+    description: '基于类似产品和工艺的历史 FMEA 数据库，AI 推荐潜在的失效模式、原因和现有控制措施。',
+    icon: '🔍',
+  },
+  {
+    title: 'AI 审核文件',
+    description: '自动审核 PPAP 文件包、控制计划、作业指导书等质量文档，检查完整性和一致性。',
+    icon: '✅',
+  },
+  {
+    title: 'AI 编写 SOP',
+    description: '根据工艺流程图和参数要求，AI 自动生成标准作业指导书，包含文字、图表和安全注意事项。',
+    icon: '📄',
+  },
+  {
+    title: 'AI 生成检验标准',
+    description: '基于产品规格、行业标准和客户要求，AI 辅助生成来料、过程和出货检验标准。',
+    icon: '📏',
+  },
+  {
+    title: 'AI 分析客户投诉',
+    description: '对客户投诉文本进行语义分析，自动分类、提取关键信息并推荐根因分析方法。',
+    icon: '💬',
+  },
+  {
+    title: 'AI 质量预测',
+    description: '结合生产过程参数和历史质量数据，AI 模型预测产品质量风险，实现前瞻性质量管控。',
+    icon: '🎯',
+  },
+];
+---
+
+<BaseLayout title="AI+质量" description="探索人工智能在制造业质量管理中的创新应用" currentPath="/ai-quality">
+  <!-- 页面头部 -->
+  <section class="bg-gradient-to-r from-[#1a3a5c] to-[#225577] text-white py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-3xl">
+        <h1 class="text-3xl md:text-4xl font-bold mb-4">AI + 质量</h1>
+        <p class="text-blue-100 text-lg leading-relaxed">
+          人工智能正在改变质量工程师的工作方式。从文档生成到数据分析，
+          AI 正在成为质量工程师的得力助手。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI 场景网格 -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {
+        scenarios.map((scenario) => (
+          <div class="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow p-6">
+            <div class="text-3xl mb-3">{scenario.icon}</div>
+            <h3 class="text-base font-semibold text-[#1a3a5c] mb-2">{scenario.title}</h3>
+            <p class="text-sm text-gray-600 leading-relaxed">{scenario.description}</p>
+            <!-- 占位：示例截图区域 -->
+            <div class="mt-4 aspect-video bg-gray-100 rounded-lg border border-dashed border-gray-300 flex items-center justify-center">
+              <span class="text-xs text-gray-400">// TODO: 替换为示例截图</span>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- 推荐文章提示 -->
+  <section class="bg-white border-t border-gray-200 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-2xl font-bold text-[#1a3a5c] mb-4">相关阅读</h2>
+      <p class="text-gray-600 text-sm mb-6">以下文章可以帮助你了解 AI 在质量领域的实际应用：</p>
+      <p class="text-sm text-gray-400">// TODO: 添加 AI+质量相关文章的链接</p>
+    </div>
+  </section>
+</BaseLayout>

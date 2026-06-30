@@ -1,0 +1,208 @@
+---
+// index.astro — 首页
+// 用途：展示 Hero 区域、今日推荐、学习路线、热门专题和最新内容
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import Card from '../components/Card.astro';
+import LearningPath from '../components/LearningPath.astro';
+
+// 导入所有内容集合
+import { getCollection } from 'astro:content';
+
+// 获取所有文章，按日期降序排列
+const allArticles = await getCollection('quality-basics', ({ data }) => data);
+const toolArticles = await getCollection('quality-tools', ({ data }) => data);
+const statArticles = await getCollection('statistics', ({ data }) => data);
+const sysArticles = await getCollection('quality-systems', ({ data }) => data);
+const procArticles = await getCollection('manufacturing-process', ({ data }) => data);
+const supArticles = await getCollection('supplier-quality', ({ data }) => data);
+const custArticles = await getCollection('customer-quality', ({ data }) => data);
+const relArticles = await getCollection('reliability', ({ data }) => data);
+const labArticles = await getCollection('lab', ({ data }) => data);
+const caseArticles = await getCollection('case-studies', ({ data }) => data);
+
+// 合并所有文章，按日期排序
+const allMerged = [
+  ...allArticles, ...toolArticles, ...statArticles, ...sysArticles,
+  ...procArticles, ...supArticles, ...custArticles, ...relArticles,
+  ...labArticles, ...caseArticles,
+].sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+// 推荐文章（取前 4 篇）
+const recommendedArticles = allMerged.slice(0, 4);
+
+// 最新内容（取前 6 篇）
+const latestArticles = allMerged.slice(0, 6);
+
+// 热门专题
+const hotTopics = ['AI+质量', 'IATF16949', 'VDA6.3', '六西格玛', '可靠性'];
+
+// 学习路线数据
+const learningStages = [
+  {
+    title: '质量基础',
+    description: '从零开始建立质量管理的基本概念，理解质量的定义、发展历程和核心思维。',
+    duration: '第1-2周',
+    topics: ['质量的演变与定义', '制造业质量管理框架', 'GDT（几何尺寸与公差）基础', '质量成本分析'],
+    skills: '理解质量管理基本概念，能区分不同质量角色的职责。',
+  },
+  {
+    title: 'QC七大手法',
+    description: '掌握质量管理中最常用的七种基础工具，适用于日常数据分析和问题解决。',
+    duration: '第3-4周',
+    topics: ['检查表与层别法', '柏拉图与鱼骨图', '直方图与散布图', '控制图基础', '5W2H与5Why分析法'],
+    skills: '能够独立使用 QC 手法分析现场质量问题。',
+  },
+  {
+    title: 'SPC + MSA',
+    description: '统计过程控制与测量系统分析，是进入专业质量工程师的核心技能。',
+    duration: '第5-7周',
+    topics: ['正态分布与统计基础', 'Cp / Cpk / Pp / Ppk 计算', '控制图的种类与选择', 'GR&R（量具重复性与再现性）', '偏倚、线性与稳定性分析'],
+    skills: '能够独立完成 SPC 方案设计与 MSA 分析报告。',
+  },
+  {
+    title: 'FMEA',
+    description: '失效模式与影响分析，预防性质量工具的核心。从 DFMEA 到 PFMEA。',
+    duration: '第8-9周',
+    topics: ['FMEA 七步法', 'DFMEA 与 PFMEA 的区别', 'SOD 评分准则', 'RPN 与行动优先级(AP)', 'FMEA-MSR'],
+    skills: '能够独立主持 FMEA 会议，编写完整的 FMEA 文件。',
+  },
+  {
+    title: 'APQP + PPAP',
+    description: '先期产品质量策划与生产件批准程序，是汽车行业质量管理的关键流程。',
+    duration: '第10-12周',
+    topics: ['APQP 五个阶段', '控制计划(Control Plan)', 'PPAP 19项提交要求', '零件提交保证书(PSW)', '量产前与投产后APQP'],
+    skills: '能够主导 APQP 项目，独立完成 PPAP 文件包提交。',
+  },
+  {
+    title: '质量体系',
+    description: '深入理解 ISO 9001、IATF 16949、VDA 6.3 等质量管理体系要求。',
+    duration: '第13-16周',
+    topics: ['ISO 9001:2015 核心条款', 'IATF 16949 汽车行业特殊要求', 'VDA 6.3 过程审核', '内审员技能', '管理评审与持续改善'],
+    skills: '具备内审员资格，能独立完成过程审核。',
+  },
+  {
+    title: 'SQE / CQE 专项',
+    description: '供应商质量工程师与客户质量工程师的专项技能提升。',
+    duration: '第17周+',
+    topics: ['供应商开发与审核', 'PPAP 批准流程', 'SCAR（供应商纠正措施报告）', '客户投诉处理(8D)', 'Capa 系统管理'],
+    skills: '能够独立管理供应商质量或客户投诉全流程。',
+  },
+  {
+    title: '质量经理方向',
+    description: '从技术走向管理，培养战略思维、团队管理和持续改进领导力。',
+    duration: '进阶',
+    topics: ['质量战略与 KPI 制定', '团队管理与教练技能', '六西格玛黑带/绿带', '数字化转型与质量', '卓越绩效模式'],
+    skills: '具备质量团队管理和跨部门协作能力。',
+  },
+];
+---
+
+<BaseLayout title="Quality Engineer Learning Site" currentPath="/">
+  <!-- Hero 区域 -->
+  <Hero
+    title="Manufacturing Quality Engineer Learning Platform"
+    subtitle="从新人到高级质量工程师的系统学习平台 — 覆盖质量工具、体系、统计、供应商、客户质量及职业发展"
+    primaryBtnText="开始学习"
+    primaryBtnLink="/learning-path"
+    secondaryBtnText="学习路线"
+    secondaryBtnLink="/learning-path"
+  />
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- 今日推荐 -->
+    <section class="mb-16">
+      <h2 class="text-2xl font-bold text-[#1a3a5c] mb-6 flex items-center gap-2">
+        <span class="text-[#e67e22]">📌</span>
+        今日推荐
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {
+          recommendedArticles.map((article) => (
+            <Card
+              title={article.data.title}
+              description={article.data.description}
+              link={`/${article.data.category}/${article.slug}`}
+              date={article.data.date.toLocaleDateString('zh-CN')}
+              tags={article.data.tags}
+              category={article.data.category}
+            />
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- 学习路线流程图 -->
+    <section class="mb-16">
+      <h2 class="text-2xl font-bold text-[#1a3a5c] mb-2">学习路线</h2>
+      <p class="text-sm text-gray-500 mb-6">从零基础到质量经理的成长路径</p>
+      <div class="flex flex-wrap gap-3 justify-center">
+        <span class="px-4 py-2 bg-[#1a3a5c] text-white text-sm rounded-full font-medium">质量基础</span>
+        <span class="flex items-center text-[#e67e22] text-xl font-bold">→</span>
+        <span class="px-4 py-2 bg-[#1a3a5c] text-white text-sm rounded-full font-medium">QC工具</span>
+        <span class="flex items-center text-[#e67e22] text-xl font-bold">→</span>
+        <span class="px-4 py-2 bg-[#1a3a5c] text-white text-sm rounded-full font-medium">SPC/MSA</span>
+        <span class="flex items-center text-[#e67e22] text-xl font-bold">→</span>
+        <span class="px-4 py-2 bg-[#1a3a5c] text-white text-sm rounded-full font-medium">FMEA</span>
+        <span class="flex items-center text-[#e67e22] text-xl font-bold">→</span>
+        <span class="px-4 py-2 bg-[#1a3a5c] text-white text-sm rounded-full font-medium">APQP/PPAP</span>
+        <span class="flex items-center text-[#e67e22] text-xl font-bold">→</span>
+        <span class="px-4 py-2 bg-[#1a3a5c] text-white text-sm rounded-full font-medium">质量体系</span>
+        <span class="flex items-center text-[#e67e22] text-xl font-bold">→</span>
+        <span class="px-4 py-2 bg-[#1a3a5c] text-white text-sm rounded-full font-medium">SQE/CQE</span>
+        <span class="flex items-center text-[#e67e22] text-xl font-bold">→</span>
+        <span class="px-4 py-2 bg-[#e67e22] text-white text-sm rounded-full font-medium">质量经理</span>
+      </div>
+      <div class="text-center mt-4">
+        <a href="/learning-path" class="text-sm text-[#e67e22] hover:text-[#c96a1c] font-medium">
+          查看详细学习路线 →
+        </a>
+      </div>
+    </section>
+
+    <!-- 热门专题 -->
+    <section class="mb-16">
+      <h2 class="text-2xl font-bold text-[#1a3a5c] mb-6 flex items-center gap-2">
+        <span class="text-[#e67e22]">🔥</span>
+        热门专题
+      </h2>
+      <div class="flex flex-wrap gap-3">
+        {
+          hotTopics.map((topic) => (
+            <a
+              href={`/search?q=${encodeURIComponent(topic)}`}
+              class="px-5 py-2.5 bg-white border border-gray-200 text-gray-700 hover:text-[#e67e22] hover:border-[#e67e22] rounded-full text-sm font-medium transition-colors shadow-sm"
+            >
+              {topic}
+            </a>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- 最新内容 -->
+    <section>
+      <h2 class="text-2xl font-bold text-[#1a3a5c] mb-6 flex items-center gap-2">
+        <span class="text-[#e67e22]">📰</span>
+        最新内容
+      </h2>
+      <div class="space-y-3">
+        {
+          latestArticles.map((article) => (
+            <a
+              href={`/${article.data.category}/${article.slug}`}
+              class="flex items-center justify-between bg-white p-4 rounded-lg border border-gray-100 hover:border-[#e67e22] hover:shadow-sm transition-all"
+            >
+              <span class="text-sm text-gray-700 group-hover:text-[#1a3a5c]">{article.data.title}</span>
+              <span class="text-xs text-gray-400 shrink-0 ml-4">
+                {article.data.date.toLocaleDateString('zh-CN', { month: 'long', day: 'numeric', year: 'numeric' })}
+                <span class="ml-2 text-[#e67e22]">{article.data.category}</span>
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+  </div>
+</BaseLayout>

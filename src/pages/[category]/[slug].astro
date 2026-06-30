@@ -1,0 +1,166 @@
+---
+// [category]/[slug].astro — 文章详情页（动态路由）
+// 用途：渲染单篇文章的完整内容，含 Frontmatter、Markdown 正文和侧边栏
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Sidebar from '../../components/Sidebar.astro';
+import { getCollection, getEntryBySlug } from 'astro:content';
+
+// 生成所有文章路径
+export async function getStaticPaths() {
+  const categories = ['quality-basics', 'quality-tools', 'statistics', 'quality-systems',
+    'manufacturing-process', 'supplier-quality', 'customer-quality', 'reliability',
+    'lab', 'case-studies'];
+
+  const paths: Array<{ params: { category: string; slug: string }; props: any }> = [];
+
+  for (const category of categories) {
+    const articles = await getCollection(category);
+    for (const article of articles) {
+      const related = await getCollection(category);
+      paths.push({
+        params: { category, slug: article.slug },
+        props: {
+          article,
+          relatedArticles: related.map((a) => ({
+            slug: a.slug,
+            title: a.data.title,
+            date: a.data.date.toLocaleDateString('zh-CN'),
+          })),
+        },
+      });
+    }
+  }
+
+  return paths;
+}
+
+const { article, relatedArticles } = Astro.props;
+const { category, slug } = Astro.params;
+const { data } = article;
+
+// 使用 Astro 内置渲染方法渲染 Markdown
+const { Content } = await article.render();
+
+// 同分类文章排序，找上一篇/下一篇
+const sortedRelated = [...relatedArticles].sort();
+const currentIndex = sortedRelated.findIndex((a) => a.slug === slug);
+const prevPost = currentIndex > 0 ? sortedRelated[currentIndex - 1] : null;
+const nextPost = currentIndex < sortedRelated.length - 1 ? sortedRelated[currentIndex + 1] : null;
+
+// 分类名称映射
+const categoryNames: Record<string, string> = {
+  'quality-basics': '质量基础',
+  'quality-tools': '质量工具',
+  'statistics': '统计分析',
+  'quality-systems': '质量体系',
+  'manufacturing-process': '制造过程',
+  'supplier-quality': '供应商质量',
+  'customer-quality': '客户质量',
+  'reliability': '可靠性',
+  'lab': '实验室',
+  'case-studies': '案例分析',
+};
+---
+
+<BaseLayout title={data.title} description={data.description} currentPath={`/${category}`}>
+  <article class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="flex flex-col lg:flex-row gap-8">
+      <!-- 主内容区 -->
+      <div class="flex-1 min-w-0">
+        <!-- 面包屑导航 -->
+        <nav class="text-sm text-gray-500 mb-4">
+          <a href="/" class="hover:text-[#e67e22] transition-colors">首页</a>
+          <span class="mx-2">›</span>
+          <a href={`/${category}`} class="hover:text-[#e67e22] transition-colors">
+            {categoryNames[category!] || category}
+          </a>
+          <span class="mx-2">›</span>
+          <span class="text-gray-800">{data.title}</span>
+        </nav>
+
+        <!-- 文章头部信息 -->
+        <header class="mb-8">
+          <h1 class="text-2xl md:text-3xl font-bold text-[#1a3a5c] leading-tight mb-4">
+            {data.title}
+          </h1>
+
+          <!-- 元信息 -->
+          <div class="flex flex-wrap items-center gap-3 text-sm text-gray-500 mb-3">
+            <span class="flex items-center gap-1">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            {data.date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}
+            </span>
+            <span class="flex items-center gap-1">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+              {data.author}
+            </span>
+            <a href={`/${category}`} class="inline-flex items-center text-[#e67e22] hover:text-[#c96a1c] font-medium">
+              #{categoryNames[category!] || category}
+            </a>
+          </div>
+
+          <!-- 标签 -->
+          {
+            data.tags && data.tags.length > 0 && (
+              <div class="flex flex-wrap gap-2 mb-4">
+                {data.tags.map((tag: string) => (
+                  <span class="text-xs text-gray-600 bg-gray-100 px-2.5 py-1 rounded-full">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )
+          }
+
+          <!-- 摘要 -->
+          {
+            data.description && (
+              <div class="bg-blue-50 border-l-4 border-[#1a3a5c] p-4 text-sm text-gray-700 leading-relaxed">
+                {data.description}
+              </div>
+            )
+          }
+        </header>
+
+        <!-- 文章正文（使用 Astro 内置的 Content 组件） -->
+        <div class="prose-content">
+          <Content />
+        </div>
+
+        <!-- 上一篇/下一篇导航 -->
+        <div class="flex justify-between mt-10 pt-6 border-t border-gray-200">
+          <div>
+            {
+              prevPost && (
+                <a
+                  href={`/${category}/${prevPost.slug}`}
+                  class="text-sm text-[#e67e22] hover:text-[#c96a1c] transition-colors"
+                >
+                  ← 上一篇：{prevPost.title}
+                </a>
+              )
+            }
+          </div>
+          <div class="text-right">
+            {
+              nextPost && (
+                <a
+                  href={`/${category}/${nextPost.slug}`}
+                  class="text-sm text-[#e67e22] hover:text-[#c96a1c] transition-colors"
+                >
+                  下一篇：{nextPost.title} →
+                </a>
+              )
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- 侧边栏 -->
+      <div class="w-full lg:w-64 shrink-0">
+        <Sidebar currentSlug={slug!} category={category!} articles={relatedArticles} />
+      </div>
+    </div>
+  </article>
+</BaseLayout>

@@ -1,0 +1,62 @@
+---
+// BaseLayout.astro — 全局布局组件
+// 用途：为所有页面提供统一的 HTML 结构、头部、导航和底部
+// Props:
+//   - title: 页面标题（必填）
+//   - description: 页面描述（可选，默认使用站点描述）
+//   - currentPath: 当前路径，用于 Header 高亮（可选）
+
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+export interface Props {
+  title: string;
+  description?: string;
+  currentPath?: string;
+}
+
+const { title, description, currentPath } = Astro.props;
+const siteTitle = 'Quality Engineer Learning Site';
+const fullTitle = title === siteTitle ? siteTitle : `${title} | ${siteTitle}`;
+const siteDescription = description || '面向制造业质量工程师的一站式学习平台，覆盖质量工具、质量体系、可靠性、统计分析、供应商质量、客户质量及职业发展。';
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={siteDescription} />
+    <meta name="keywords" content="质量工程师, QE, SQE, CQE, FMEA, SPC, 六西格玛, 制造业, 质量管理" />
+    <title>{fullTitle}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <!-- 顶部导航 -->
+    <Header currentPath={currentPath} />
+
+    <!-- 主内容区域 -->
+    <main class="flex-1">
+      <slot />
+    </main>
+
+    <!-- 底部信息 -->
+    <Footer />
+  </body>
+</html>
+
+<style>
+  /* 确保 body 始终填满视口 */
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  main {
+    flex: 1;
+  }
+</style>

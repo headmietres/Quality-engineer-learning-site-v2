@@ -1,0 +1,94 @@
+---
+// ArticleLayout.astro — 文章详情布局组件
+// 用途：包裹文章详情页，显示 Frontmatter 信息、正文、侧边栏
+
+import Sidebar from './Sidebar.astro';
+
+export interface PostRef {
+  title: string;
+  slug: string;
+}
+
+export interface Props {
+  title: string;
+  date: string;
+  author: string;
+  tags?: string[];
+  category: string;
+  description?: string;
+  relatedArticles?: Array<{ slug: string; title: string; date?: string }>;
+  currentSlug: string;
+  prevPost?: PostRef;
+  nextPost?: PostRef;
+}
+
+const { title, date, author, tags, category, description, relatedArticles, currentSlug, prevPost, nextPost } = Astro.props;
+---
+
+<article class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="flex flex-col lg:flex-row gap-8">
+    <!-- 主内容区 -->
+    <div class="flex-1 min-w-0">
+      <!-- 面包屑导航 -->
+      <nav class="text-sm text-gray-500 mb-4">
+        <a href="/" class="hover:text-[#e67e22] transition-colors">首页</a>
+        <span class="mx-2">›</span>
+        <a href={`/${category}`} class="hover:text-[#e67e22] transition-colors">{category}</a>
+        <span class="mx-2">›</span>
+        <span class="text-gray-800">{title}</span>
+      </nav>
+
+      <!-- 文章头部信息 -->
+      <header class="mb-8">
+        <h1 class="text-2xl md:text-3xl font-bold text-[#1a3a5c] leading-tight mb-4">{title}</h1>
+
+        <!-- 元信息 -->
+        <div class="flex flex-wrap items-center gap-3 text-sm text-gray-500 mb-3">
+          <span>{date}</span>
+          <span>作者：{author}</span>
+          <a href={`/${category}`} class="text-[#e67e22] hover:text-[#c96a1c] font-medium">#{category}</a>
+        </div>
+
+        {tags && tags.length > 0 && (
+          <div class="flex flex-wrap gap-2 mb-4">
+            {tags.map((tag) => (
+              <span class="text-xs text-gray-600 bg-gray-100 px-2.5 py-1 rounded-full">{tag}</span>
+            ))}
+          </div>
+        )}
+
+        {description && (
+          <div class="bg-blue-50 border-l-4 border-[#1a3a5c] p-4 text-sm text-gray-700 leading-relaxed">{description}</div>
+        )}
+      </header>
+
+      <!-- 文章正文 -->
+      <div class="prose-content"><slot /></div>
+
+      <!-- 上一篇/下一篇导航 -->
+      <div class="flex justify-between mt-10 pt-6 border-t border-gray-200">
+        <div>
+          {prevPost && (
+            <a href={`/${category}/${prevPost.slug}`} class="text-sm text-[#e67e22] hover:text-[#c96a1c] transition-colors">
+              ← 上一篇：{prevPost.title}
+            </a>
+          )}
+        </div>
+        <div class="text-right">
+          {nextPost && (
+            <a href={`/${category}/${nextPost.slug}`} class="text-sm text-[#e67e22] hover:text-[#c96a1c] transition-colors">
+              下一篇：{nextPost.title} →
+            </a>
+          )}
+        </div>
+      </div>
+    </div>
+
+    <!-- 侧边栏 -->
+    <div class="w-full lg:w-64 shrink-0">
+      {relatedArticles && relatedArticles.length > 0 && (
+        <Sidebar currentSlug={currentSlug} category={category} articles={relatedArticles} />
+      )}
+    </div>
+  </div>
+</article>

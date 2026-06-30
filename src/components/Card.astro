@@ -1,0 +1,89 @@
+---
+// Card.astro — 通用卡片组件
+// 用途：展示文章摘要、资源卡片、推荐内容
+// Props:
+//   - title: 卡片标题
+//   - description: 卡片描述
+//   - link: 点击跳转链接
+//   - image: 封面图路径（可选）
+//   - date: 日期字符串（可选）
+//   - tags: 标签数组（可选）
+//   - category: 分类名称（可选）
+
+export interface Props {
+  title: string;
+  description?: string;
+  link: string;
+  image?: string;
+  date?: string;
+  tags?: string[];
+  category?: string;
+}
+
+const { title, description, link, image, date, tags, category } = Astro.props;
+---
+
+<a
+  href={link}
+  class="block bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-100 overflow-hidden group"
+>
+  <!-- 封面图 -->
+  {
+    image && (
+      <div class="aspect-video bg-gray-100 overflow-hidden">
+        <img
+          src={image}
+          alt={title}
+          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          loading="lazy"
+        />
+      </div>
+    )
+  }
+
+  <!-- 内容区 -->
+  <div class="p-5">
+    <!-- 分类标签 -->
+    {
+      category && (
+        <span class="inline-block text-xs font-medium text-[#e67e22] bg-orange-50 px-2 py-0.5 rounded mb-2">
+          {category}
+        </span>
+      )
+    }
+
+    <!-- 标题 -->
+    <h3 class="text-base font-semibold text-[#1a3a5c] group-hover:text-[#e67e22] transition-colors line-clamp-2 mb-2">
+      {title}
+    </h3>
+
+    <!-- 描述 -->
+    {
+      description && (
+        <p class="text-sm text-gray-600 leading-relaxed line-clamp-3 mb-3">
+          {description}
+        </p>
+      )
+    }
+
+    <!-- 底部：日期和标签 -->
+    <div class="flex items-center justify-between">
+      {
+        date && (
+          <span class="text-xs text-gray-400">{date}</span>
+        )
+      }
+      {
+        tags && tags.length > 0 && (
+          <div class="flex gap-1 flex-wrap">
+            {tags.slice(0, 3).map((tag) => (
+              <span class="text-xs text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">
+                {tag}
+              </span>
+            ))}
+          </div>
+        )
+      }
+    </div>
+  </div>
+</a>
