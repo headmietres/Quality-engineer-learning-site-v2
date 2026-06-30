@@ -46,19 +46,18 @@ function isActive(itemPath: string): boolean {
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex items-center justify-between h-16">
       <!-- Logo -->
-      <a href={url('/')} class="flex items-center space-x-2 shrink-0">
-        <span class="text-lg font-bold text-[#1a3a5c] whitespace-nowrap">QE Learning</span>
-        <span class="hidden sm:inline text-sm text-gray-500">| 质量工程师学习平台</span>
+      <a href={url('/')} class="flex items-center shrink-0 mr-2">
+        <span class="text-base font-bold text-[#1a3a5c] whitespace-nowrap">QE Learning</span>
       </a>
 
       <!-- 桌面端导航 -->
-      <nav class="hidden lg:flex items-center flex-1 justify-start space-x-1 overflow-x-auto mx-4 scrollbar-thin" id="desktop-nav">
+      <nav class="hidden lg:flex items-center flex-1 justify-start mx-1" id="desktop-nav">
         {
           navItems.map((item) => (
             <a
               href={item.path}
               class:list={[
-                'px-2 py-1.5 text-xs font-medium rounded-md whitespace-nowrap transition-colors',
+                'px-1.5 py-1.5 text-xs font-medium rounded whitespace-nowrap transition-colors shrink-0',
                 isActive(item.path)
                   ? 'text-[#e67e22] bg-orange-50'
                   : 'text-gray-600 hover:text-[#1a3a5c] hover:bg-gray-50',
@@ -71,14 +70,14 @@ function isActive(itemPath: string): boolean {
       </nav>
 
       <!-- 右侧：搜索 + 汉堡按钮 -->
-      <div class="flex items-center space-x-3">
-        <div class="hidden md:block w-48 lg:w-56">
+      <div class="flex items-center space-x-1 shrink-0">
+        <div class="hidden md:block w-36 lg:w-44">
           <Search />
         </div>
 
         <button
           id="menu-toggle"
-          class="lg:hidden p-2 rounded-md text-gray-600 hover:text-[#1a3a5c] hover:bg-gray-100 focus:outline-none"
+          class="lg:hidden p-1.5 rounded-md text-gray-600 hover:text-[#1a3a5c] hover:bg-gray-100 focus:outline-none"
           aria-label="打开菜单"
           aria-expanded="false"
         >
@@ -147,14 +146,5 @@ function isActive(itemPath: string): boolean {
 </script>
 
 <style>
-  .scrollbar-thin::-webkit-scrollbar {
-    height: 2px;
-  }
-  .scrollbar-thin::-webkit-scrollbar-thumb {
-    background: #ccc;
-    border-radius: 2px;
-  }
-  .scrollbar-thin::-webkit-scrollbar-track {
-    background: transparent;
-  }
+  /* 不需要额外样式 */
 </style>
