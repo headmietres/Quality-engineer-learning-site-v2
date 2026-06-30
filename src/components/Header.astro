@@ -47,18 +47,18 @@ function isActive(itemPath: string): boolean {
     <div class="flex items-center justify-between h-16">
       <!-- Logo -->
       <a href={url('/')} class="flex items-center space-x-2 shrink-0">
-        <span class="text-xl font-bold text-[#1a3a5c]">QE Learning</span>
+        <span class="text-lg font-bold text-[#1a3a5c] whitespace-nowrap">QE Learning</span>
         <span class="hidden sm:inline text-sm text-gray-500">| 质量工程师学习平台</span>
       </a>
 
       <!-- 桌面端导航 -->
-      <nav class="hidden lg:flex items-center space-x-1 overflow-x-auto max-w-[60%] scrollbar-hide" id="desktop-nav">
+      <nav class="hidden lg:flex items-center flex-1 justify-start space-x-1 overflow-x-auto mx-4 scrollbar-thin" id="desktop-nav">
         {
           navItems.map((item) => (
             <a
               href={item.path}
               class:list={[
-                'px-2.5 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-colors',
+                'px-2 py-1.5 text-xs font-medium rounded-md whitespace-nowrap transition-colors',
                 isActive(item.path)
                   ? 'text-[#e67e22] bg-orange-50'
                   : 'text-gray-600 hover:text-[#1a3a5c] hover:bg-gray-50',
@@ -90,8 +90,8 @@ function isActive(itemPath: string): boolean {
       </div>
     </div>
 
-    <!-- 移动端搜索框 -->
-    <div class="md:hidden pb-3">
+    <!-- 移动端/平板端搜索框（lg 以下显示） -->
+    <div class="lg:hidden pb-3">
       <Search />
     </div>
   </div>
@@ -147,11 +147,14 @@ function isActive(itemPath: string): boolean {
 </script>
 
 <style>
-  .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+  .scrollbar-thin::-webkit-scrollbar {
+    height: 2px;
   }
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 2px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
   }
 </style>
