@@ -3,6 +3,7 @@
 // 用途：包裹文章详情页，显示 Frontmatter 信息、正文、侧边栏
 
 import Sidebar from './Sidebar.astro';
+import { url } from '../utils/index';
 
 export interface PostRef {
   title: string;
@@ -31,9 +32,9 @@ const { title, date, author, tags, category, description, relatedArticles, curre
     <div class="flex-1 min-w-0">
       <!-- 面包屑导航 -->
       <nav class="text-sm text-gray-500 mb-4">
-        <a href="/" class="hover:text-[#e67e22] transition-colors">首页</a>
+        <a href={url('/')} class="hover:text-[#e67e22] transition-colors">首页</a>
         <span class="mx-2">›</span>
-        <a href={`/${category}`} class="hover:text-[#e67e22] transition-colors">{category}</a>
+        <a href={url(`/${category}`)} class="hover:text-[#e67e22] transition-colors">{category}</a>
         <span class="mx-2">›</span>
         <span class="text-gray-800">{title}</span>
       </nav>
@@ -46,7 +47,7 @@ const { title, date, author, tags, category, description, relatedArticles, curre
         <div class="flex flex-wrap items-center gap-3 text-sm text-gray-500 mb-3">
           <span>{date}</span>
           <span>作者：{author}</span>
-          <a href={`/${category}`} class="text-[#e67e22] hover:text-[#c96a1c] font-medium">#{category}</a>
+          <a href={url(`/${category}`)} class="text-[#e67e22] hover:text-[#c96a1c] font-medium">#{category}</a>
         </div>
 
         {tags && tags.length > 0 && (
@@ -69,14 +70,14 @@ const { title, date, author, tags, category, description, relatedArticles, curre
       <div class="flex justify-between mt-10 pt-6 border-t border-gray-200">
         <div>
           {prevPost && (
-            <a href={`/${category}/${prevPost.slug}`} class="text-sm text-[#e67e22] hover:text-[#c96a1c] transition-colors">
+            <a href={url(`/${category}/${prevPost.slug}`)} class="text-sm text-[#e67e22] hover:text-[#c96a1c] transition-colors">
               ← 上一篇：{prevPost.title}
             </a>
           )}
         </div>
         <div class="text-right">
           {nextPost && (
-            <a href={`/${category}/${nextPost.slug}`} class="text-sm text-[#e67e22] hover:text-[#c96a1c] transition-colors">
+            <a href={url(`/${category}/${nextPost.slug}`)} class="text-sm text-[#e67e22] hover:text-[#c96a1c] transition-colors">
               下一篇：{nextPost.title} →
             </a>
           )}

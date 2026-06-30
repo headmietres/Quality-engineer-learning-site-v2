@@ -1,14 +1,7 @@
 ---
 // Card.astro — 通用卡片组件
-// 用途：展示文章摘要、资源卡片、推荐内容
-// Props:
-//   - title: 卡片标题
-//   - description: 卡片描述
-//   - link: 点击跳转链接
-//   - image: 封面图路径（可选）
-//   - date: 日期字符串（可选）
-//   - tags: 标签数组（可选）
-//   - category: 分类名称（可选）
+
+import { url } from '../utils/index';
 
 export interface Props {
   title: string;
@@ -24,7 +17,7 @@ const { title, description, link, image, date, tags, category } = Astro.props;
 ---
 
 <a
-  href={link}
+  href={url(link)}
   class="block bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-100 overflow-hidden group"
 >
   <!-- 封面图 -->

@@ -1,15 +1,16 @@
 ---
 // Search.astro — Pagefind 搜索组件
-// 用途：提供搜索输入框和搜索结果下拉面板
 
 export interface Props {
   placeholder?: string;
 }
 
 const { placeholder = '搜索文章...' } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const pagefindPath = base === '/' ? '/pagefind/pagefind.js' : base + '/pagefind/pagefind.js';
 ---
 
-<div class="search-container relative" id="search-container">
+<div class="search-container relative" id="search-container" data-pagefind-src={pagefindPath}>
   <div class="relative">
     <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -26,94 +27,118 @@ const { placeholder = '搜索文章...' } = Astro.props;
 </div>
 
 <script>
-  let pagefind = null;
-  let searchTimeout = null;
+(function(){
+  var pagefind = null;
+  var searchTimeout = null;
 
-  const searchInput = document.getElementById('search-input');
-  const searchResults = document.getElementById('search-results');
+  var container = document.getElementById('search-container');
+  var searchInput = document.getElementById('search-input');
+  var searchResults = document.getElementById('search-results');
+  var pagefindPath = '/pagefind/pagefind.js';
 
-  // 动态加载 Pagefind 脚本
-  async function loadPagefind() {
-    if (pagefind) return pagefind;
-    try {
-      // Pagefind 构建后会在 /pagefind/pagefind.js 生成
-      pagefind = await window.pagefind;
-      return pagefind;
-    } catch (e) {
-      // 如果 Pagefind 未加载，尝试动态添加脚本
-      return new Promise((resolve) => {
-        const script = document.createElement('script');
-        script.src = '/pagefind/pagefind.js';
-        script.onload = async () => {
-          pagefind = await window.pagefind;
-          resolve(pagefind);
-        };
-        script.onerror = () => {
-          console.warn('Pagefind 搜索索引未生成，请运行 npm run build');
-          resolve(null);
-        };
-        document.head.appendChild(script);
-      });
-    }
+  if (container && container.dataset && container.dataset.pagefindSrc) {
+    pagefindPath = container.dataset.pagefindSrc;
   }
 
-  async function performSearch(query) {
+  function loadPagefind(callback) {
+    if (pagefind) {
+      callback(pagefind);
+      return;
+    }
+    if (window.pagefind) {
+      pagefind = window.pagefind;
+      callback(pagefind);
+      return;
+    }
+    var script = document.createElement('script');
+    script.src = pagefindPath;
+    script.onload = function() {
+      if (window.pagefind) {
+        pagefind = window.pagefind;
+      }
+      callback(pagefind);
+    };
+    script.onerror = function() {
+      console.warn('Pagefind not loaded');
+      callback(null);
+    };
+    document.head.appendChild(script);
+  }
+
+  function performSearch(query) {
     if (!query || query.trim().length < 1) {
       searchResults.classList.add('hidden');
       searchResults.innerHTML = '';
       return;
     }
 
-    const pf = await loadPagefind();
-    if (!pf) {
-      searchResults.innerHTML = '<div class="p-4 text-sm text-gray-500">搜索索引尚未生成</div>';
-      searchResults.classList.remove('hidden');
-      return;
-    }
+    loadPagefind(function(pf) {
+      if (!pf) {
+        searchResults.innerHTML = '<div class="p-4 text-sm text-gray-500">搜索索引未生成</div>';
+        searchResults.classList.remove('hidden');
+        return;
+      }
 
-    const result = await pf.search(query);
-    if (!result?.results?.length) {
-      searchResults.innerHTML = '<div class="p-4 text-sm text-gray-500">未找到相关结果</div>';
-      searchResults.classList.remove('hidden');
-      return;
-    }
+      pf.search(query).then(function(result) {
+        if (!result || !result.results || result.results.length === 0) {
+          searchResults.innerHTML = '<div class="p-4 text-sm text-gray-500">未找到相关结果</div>';
+          searchResults.classList.remove('hidden');
+          return;
+        }
 
-    const results = await Promise.all(
-      result.results.slice(0, 8).map(async (r) => await r.data())
-    );
+        var items = result.results.slice(0, 8);
+        var promises = items.map(function(r) { return r.data(); });
 
-    searchResults.innerHTML = results
-      .map(
-        (data) => `
-          <a href="${data.url}" class="block px-4 py-3 hover:bg-orange-50 border-b border-gray-100 last:border-0 transition-colors">
-            <div class="text-sm font-medium text-[#1a3a5c]">${data.meta?.title || data.title || '无标题'}</div>
-            <div class="text-xs text-gray-500 mt-1 line-clamp-1">${data.excerpt || data.meta?.description || ''}</div>
-            <div class="text-xs text-[#e67e22] mt-1">${data.url}</div>
-          </a>
-        `
-      )
-      .join('');
+        Promise.all(promises).then(function(datas) {
+          var html = '';
+          for (var i = 0; i < datas.length; i++) {
+            var data = datas[i];
+            var meta = data.meta || {};
+            var resultTitle = meta.title || data.title || '无标题';
+            var resultExcerpt = data.excerpt || meta.description || '';
+            var resultUrl = data.url;
+            if (resultUrl.charAt(0) !== '/') {
+              resultUrl = '/' + resultUrl;
+            }
+            html += '<a href="' + resultUrl + '" class="block px-4 py-3 hover:bg-orange-50 border-b border-gray-100 last:border-0 transition-colors">' +
+              '<div class="text-sm font-medium text-[#1a3a5c]">' + escapeHtml(resultTitle) + '</div>' +
+              '<div class="text-xs text-gray-500 mt-1 line-clamp-1">' + escapeHtml(resultExcerpt) + '</div>' +
+              '<div class="text-xs text-[#e67e22] mt-1">' + escapeHtml(resultUrl) + '</div>' +
+              '</a>';
+          }
+          searchResults.innerHTML = html;
+          searchResults.classList.remove('hidden');
+        });
+      });
+    });
+  }
 
-    searchResults.classList.remove('hidden');
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
   if (searchInput && searchResults) {
-    searchInput.addEventListener('input', () => {
+    searchInput.addEventListener('input', function() {
       clearTimeout(searchTimeout);
-      searchTimeout = setTimeout(() => performSearch(searchInput.value), 300);
+      searchTimeout = setTimeout(function() {
+        performSearch(searchInput.value);
+      }, 300);
     });
 
-    document.addEventListener('click', (e) => {
-      if (!document.getElementById('search-container').contains(e.target)) {
+    document.addEventListener('click', function(e) {
+      var sc = document.getElementById('search-container');
+      if (sc && !sc.contains(e.target)) {
         searchResults.classList.add('hidden');
       }
     });
 
-    searchInput.addEventListener('keydown', (e) => {
+    searchInput.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') {
         searchResults.classList.add('hidden');
         searchInput.blur();
       }
     });
   }
+})();
 </script>

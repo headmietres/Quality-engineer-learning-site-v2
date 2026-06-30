@@ -6,6 +6,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Card from '../../components/Card.astro';
 import { getCollection } from 'astro:content';
 import { categoryMeta } from '../../content/config';
+import { url } from '../../utils/index';
 
 // Astro 分页：每页 6 篇文章
 export async function getStaticPaths() {
@@ -55,7 +56,7 @@ const totalPages = page.totalPages;
   <section class="bg-gradient-to-r from-[#1a3a5c] to-[#225577] text-white py-10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <nav class="text-sm text-blue-200 mb-4">
-        <a href="/" class="hover:text-white transition-colors">首页</a>
+        <a href={url('/')} class="hover:text-white transition-colors">首页</a>
         <span class="mx-2">›</span>
         <span class="text-white">{meta?.name || category}</span>
       </nav>
@@ -72,7 +73,7 @@ const totalPages = page.totalPages;
           {
             articles.map((article) => (
               <a
-                href={`/${category}/${article.slug}`}
+                href={url(`/${category}/${article.slug}`)}
                 class="block bg-white rounded-lg border border-gray-100 p-5 hover:border-[#e67e22] hover:shadow-sm transition-all"
               >
                 <h2 class="text-lg font-semibold text-[#1a3a5c] hover:text-[#e67e22] transition-colors mb-2">
@@ -99,7 +100,7 @@ const totalPages = page.totalPages;
       ) : (
         <div class="text-center py-16">
           <p class="text-gray-400 text-lg">该分类暂无文章</p>
-          <a href="/" class="inline-block mt-4 text-sm text-[#e67e22] hover:text-[#c96a1c]">返回首页</a>
+          <a href={url('/')} class="inline-block mt-4 text-sm text-[#e67e22] hover:text-[#c96a1c]">返回首页</a>
         </div>
       )
     }
@@ -111,7 +112,7 @@ const totalPages = page.totalPages;
           {
             currentPage > 1 && (
               <a
-                href={currentPage === 2 ? `/${category}` : `/${category}/${currentPage - 1}`}
+                href={currentPage === 2 ? url(`/${category}`) : url(`/${category}/${currentPage - 1}`)}
                 class="px-4 py-2 text-sm text-[#1a3a5c] bg-white border border-gray-200 rounded-lg hover:border-[#e67e22] transition-colors"
               >
                 ← 上一页
@@ -124,7 +125,7 @@ const totalPages = page.totalPages;
           {
             currentPage < totalPages && (
               <a
-                href={`/${category}/${currentPage + 1}`}
+                href={url(`/${category}/${currentPage + 1}`)}
                 class="px-4 py-2 text-sm text-[#1a3a5c] bg-white border border-gray-200 rounded-lg hover:border-[#e67e22] transition-colors"
               >
                 下一页 →

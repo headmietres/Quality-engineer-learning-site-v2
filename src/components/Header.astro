@@ -1,10 +1,9 @@
 ---
 // Header.astro — 顶部导航组件
 // 用途：显示 Logo、一级导航菜单和搜索框
-// Props:
-//   - currentPath: 当前页面路径（可选），用于高亮当前导航项
 
 import Search from './Search.astro';
+import { url } from '../utils/index';
 
 export interface Props {
   currentPath?: string;
@@ -14,27 +13,32 @@ const { currentPath = '' } = Astro.props;
 
 // 导航配置：名称 → 路径
 const navItems = [
-  { name: '首页', path: '/' },
-  { name: '学习路线', path: '/learning-path' },
-  { name: '质量基础', path: '/quality-basics' },
-  { name: '质量工具', path: '/quality-tools' },
-  { name: '统计分析', path: '/statistics' },
-  { name: '质量体系', path: '/quality-systems' },
-  { name: '制造过程', path: '/manufacturing-process' },
-  { name: '供应商质量', path: '/supplier-quality' },
-  { name: '客户质量', path: '/customer-quality' },
-  { name: '可靠性', path: '/reliability' },
-  { name: '实验室', path: '/lab' },
-  { name: 'AI+质量', path: '/ai-quality' },
-  { name: '案例分析', path: '/case-studies' },
-  { name: '资源中心', path: '/resources' },
-  { name: '职业发展', path: '/career' },
+  { name: '首页', path: url('/') },
+  { name: '学习路线', path: url('/learning-path') },
+  { name: '质量基础', path: url('/quality-basics') },
+  { name: '质量工具', path: url('/quality-tools') },
+  { name: '统计分析', path: url('/statistics') },
+  { name: '质量体系', path: url('/quality-systems') },
+  { name: '制造过程', path: url('/manufacturing-process') },
+  { name: '供应商质量', path: url('/supplier-quality') },
+  { name: '客户质量', path: url('/customer-quality') },
+  { name: '可靠性', path: url('/reliability') },
+  { name: '实验室', path: url('/lab') },
+  { name: 'AI+质量', path: url('/ai-quality') },
+  { name: '案例分析', path: url('/case-studies') },
+  { name: '资源中心', path: url('/resources') },
+  { name: '职业发展', path: url('/career') },
 ];
 
 // 判断导航项是否高亮：精确匹配或以分类路径开头
 function isActive(itemPath: string): boolean {
-  if (itemPath === '/') return currentPath === '/';
-  return currentPath.startsWith(itemPath);
+  if (itemPath === url('/')) return currentPath === '/';
+  // 移除 base 前缀再比较
+  const base = import.meta.env.BASE_URL;
+  const cleanPath = currentPath.replace(base, '') || '/';
+  const cleanItem = itemPath.replace(base, '') || '/';
+  if (cleanItem === '/') return cleanPath === '/';
+  return cleanPath.startsWith(cleanItem);
 }
 ---
 
@@ -42,12 +46,12 @@ function isActive(itemPath: string): boolean {
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex items-center justify-between h-16">
       <!-- Logo -->
-      <a href="/" class="flex items-center space-x-2 shrink-0">
+      <a href={url('/')} class="flex items-center space-x-2 shrink-0">
         <span class="text-xl font-bold text-[#1a3a5c]">QE Learning</span>
         <span class="hidden sm:inline text-sm text-gray-500">| 质量工程师学习平台</span>
       </a>
 
-      <!-- 桌面端导航 - 滚动容器 -->
+      <!-- 桌面端导航 -->
       <nav class="hidden lg:flex items-center space-x-1 overflow-x-auto max-w-[60%] scrollbar-hide" id="desktop-nav">
         {
           navItems.map((item) => (
@@ -68,12 +72,10 @@ function isActive(itemPath: string): boolean {
 
       <!-- 右侧：搜索 + 汉堡按钮 -->
       <div class="flex items-center space-x-3">
-        <!-- Pagefind 搜索框（桌面端） -->
         <div class="hidden md:block w-48 lg:w-56">
           <Search />
         </div>
 
-        <!-- 汉堡菜单按钮（移动端） -->
         <button
           id="menu-toggle"
           class="lg:hidden p-2 rounded-md text-gray-600 hover:text-[#1a3a5c] hover:bg-gray-100 focus:outline-none"
@@ -88,7 +90,7 @@ function isActive(itemPath: string): boolean {
       </div>
     </div>
 
-    <!-- 移动端搜索框（在导航下方） -->
+    <!-- 移动端搜索框 -->
     <div class="md:hidden pb-3">
       <Search />
     </div>
@@ -132,7 +134,6 @@ function isActive(itemPath: string): boolean {
       if (closeIcon) closeIcon.classList.toggle('hidden');
     });
 
-    // 点击导航项后自动关闭菜单
     mobileMenu.querySelectorAll('a').forEach((link) => {
       link.addEventListener('click', () => {
         mobileMenu.classList.add('hidden');
@@ -146,7 +147,6 @@ function isActive(itemPath: string): boolean {
 </script>
 
 <style>
-  /* 隐藏滚动条但保持可滚动 */
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;

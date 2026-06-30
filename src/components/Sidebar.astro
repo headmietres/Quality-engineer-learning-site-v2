@@ -1,10 +1,8 @@
 ---
 // Sidebar.astro — 文章侧边栏组件
 // 用途：在文章详情页显示同分类下的其他文章列表
-// Props:
-//   - currentSlug: 当前文章 slug，用于排除自身
-//   - category: 分类名称
-//   - articles: 同分类文章列表（含 slug 和 title）
+
+import { url } from '../utils/index';
 
 export interface ArticleRef {
   slug: string;
@@ -34,16 +32,12 @@ const relatedArticles = articles.filter((a) => a.slug !== currentSlug).slice(0, 
         {relatedArticles.map((article) => (
           <li>
             <a
-              href={`/${category}/${article.slug}`}
+              href={url(`/${category}/${article.slug}`)}
               class="block text-sm text-gray-600 hover:text-[#e67e22] transition-colors leading-relaxed"
             >
               {article.title}
             </a>
-            {
-              article.date && (
-                <span class="text-xs text-gray-400">{article.date}</span>
-              )
-            }
+            {article.date && <span class="text-xs text-gray-400">{article.date}</span>}
           </li>
         ))}
       </ul>
@@ -52,9 +46,8 @@ const relatedArticles = articles.filter((a) => a.slug !== currentSlug).slice(0, 
     )
   }
 
-  <!-- 返回分类列表 -->
   <a
-    href={`/${category}`}
+    href={url(`/${category}`)}
     class="block mt-4 text-sm text-[#e67e22] hover:text-[#c96a1c] font-medium transition-colors"
   >
     ← 返回列表

@@ -5,6 +5,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import Card from '../components/Card.astro';
+import { url } from '../utils/index';
 import LearningPath from '../components/LearningPath.astro';
 
 // 导入所有内容集合
@@ -123,7 +124,7 @@ const learningStages = [
             <Card
               title={article.data.title}
               description={article.data.description}
-              link={`/${article.data.category}/${article.slug}`}
+              link={url(`/${article.data.category}/${article.slug}`)}
               date={article.data.date.toLocaleDateString('zh-CN')}
               tags={article.data.tags}
               category={article.data.category}
@@ -155,7 +156,7 @@ const learningStages = [
         <span class="px-4 py-2 bg-[#e67e22] text-white text-sm rounded-full font-medium">质量经理</span>
       </div>
       <div class="text-center mt-4">
-        <a href="/learning-path" class="text-sm text-[#e67e22] hover:text-[#c96a1c] font-medium">
+        <a href={url('/learning-path')} class="text-sm text-[#e67e22] hover:text-[#c96a1c] font-medium">
           查看详细学习路线 →
         </a>
       </div>
@@ -171,7 +172,7 @@ const learningStages = [
         {
           hotTopics.map((topic) => (
             <a
-              href={`/search?q=${encodeURIComponent(topic)}`}
+              href={url(`/search?q=${encodeURIComponent(topic)}`)}
               class="px-5 py-2.5 bg-white border border-gray-200 text-gray-700 hover:text-[#e67e22] hover:border-[#e67e22] rounded-full text-sm font-medium transition-colors shadow-sm"
             >
               {topic}
@@ -191,7 +192,7 @@ const learningStages = [
         {
           latestArticles.map((article) => (
             <a
-              href={`/${article.data.category}/${article.slug}`}
+              href={url(`/${article.data.category}/${article.slug}`)}
               class="flex items-center justify-between bg-white p-4 rounded-lg border border-gray-100 hover:border-[#e67e22] hover:shadow-sm transition-all"
             >
               <span class="text-sm text-gray-700 group-hover:text-[#1a3a5c]">{article.data.title}</span>
