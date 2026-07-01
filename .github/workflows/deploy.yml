@@ -3,6 +3,14 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.ppt'
+      - '**/*.pptx'
+      - '**/*.xls'
+      - '**/*.xlsx'
+      - '**/*.doc'
+      - '**/*.docx'
   workflow_dispatch:
 
 permissions:
