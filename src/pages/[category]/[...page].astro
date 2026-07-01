@@ -1,6 +1,7 @@
 ---
-// [category]/index.astro — 分类列表页（动态路由）
+// [category]/[...page].astro — 分类列表页（动态路由 + 分页）
 // 用途：显示指定分类下的所有文章，按日期降序排列，支持分页
+// [...page] 是 rest 参数：page 1 生成 /category/，page 2+ 生成 /category/2/ 等
 
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Card from '../../components/Card.astro';
@@ -9,38 +10,25 @@ import { categoryMeta } from '../../content/config';
 import { url } from '../../utils/index';
 
 // Astro 分页：每页 6 篇文章
-export async function getStaticPaths() {
-  const categories = Object.keys(categoryMeta);
-  const allPages: Array<{ params: { category: string }; props: { page: any } }> = [];
+export async function getStaticPaths({ paginate }: { paginate: any }) {
+  const paths: Array<{ params: any; props: any }> = [];
 
-  for (const category of categories) {
-    const articles = await getCollection(category, ({ data }) => data);
+  for (const [category, meta] of Object.entries(categoryMeta)) {
+    const articles = await getCollection(category);
     // 按日期降序排序
     articles.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
-    const pageSize = 6;
-    const totalPages = Math.ceil(articles.length / pageSize);
+    // 使用 Astro 的 paginate 生成分页路由
+    const paginated = paginate(articles, {
+      pageSize: 6,
+      params: { category },
+      props: { category, meta },
+    });
 
-    for (let page = 1; page <= Math.max(totalPages, 1); page++) {
-      const start = (page - 1) * pageSize;
-      const end = start + pageSize;
-      const pageArticles = articles.slice(start, end);
-
-      allPages.push({
-        params: { category },
-        props: {
-          page: {
-            data: pageArticles,
-            currentPage: page,
-            totalPages: Math.max(totalPages, 1),
-            category,
-          },
-        },
-      });
-    }
+    paths.push(...paginated);
   }
 
-  return allPages;
+  return paths;
 }
 
 const { page } = Astro.props;
@@ -49,6 +37,7 @@ const meta = categoryMeta[category!];
 const articles = page.data;
 const currentPage = page.currentPage;
 const totalPages = page.totalPages;
+const basePath = url(`/${category}`);
 ---
 
 <BaseLayout title={meta?.name || category!} description={meta?.description} currentPath={`/${category}`}>
@@ -110,9 +99,9 @@ const totalPages = page.totalPages;
       totalPages > 1 && (
         <nav class="flex justify-center items-center gap-4 mt-10">
           {
-            currentPage > 1 && (
+            page.url.prev && (
               <a
-                href={currentPage === 2 ? url(`/${category}`) : url(`/${category}/${currentPage - 1}`)}
+                href={url(page.url.prev)}
                 class="px-4 py-2 text-sm text-[#1a3a5c] bg-white border border-gray-200 rounded-lg hover:border-[#e67e22] transition-colors"
               >
                 ← 上一页
@@ -123,9 +112,9 @@ const totalPages = page.totalPages;
             第 {currentPage} / {totalPages} 页
           </span>
           {
-            currentPage < totalPages && (
+            page.url.next && (
               <a
-                href={url(`/${category}/${currentPage + 1}`)}
+                href={url(page.url.next)}
                 class="px-4 py-2 text-sm text-[#1a3a5c] bg-white border border-gray-200 rounded-lg hover:border-[#e67e22] transition-colors"
               >
                 下一页 →
