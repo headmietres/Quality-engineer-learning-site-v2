@@ -1,6 +1,6 @@
 ---
 title: "新QC七大手法：系统性的梳理与决策工具"
-date: 2026-07-1
+date: 2026-07-01
 author: "QE Learning 编辑部"
 category: "quality-tools"
 tags: ["QC七大手法", "系统性分析"]
