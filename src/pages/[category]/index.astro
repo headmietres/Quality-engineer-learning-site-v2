@@ -25,14 +25,17 @@ export async function getStaticPaths() {
       const start = (page - 1) * pageSize;
       const end = start + pageSize;
       const pageArticles = articles.slice(start, end);
-
+      const params = { category };
+      if(p > 1){
+        params.page = [String(p)]; // rest 参数要求数组
+}
       allPages.push({
-        params: { category },
+        params,
         props: {
           page: {
             data: pageArticles,
-            currentPage: page,
-            totalPages: Math.max(totalPages, 1),
+            currentPage: p,
+            totalPages: totalPages,
             category,
           },
         },
