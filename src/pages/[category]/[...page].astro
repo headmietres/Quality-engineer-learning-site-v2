@@ -10,8 +10,8 @@ import { url } from '../../utils/index';
 
 // Astro 分页：每页 6 篇文章
 export async function getStaticPaths() {
-  const categories = Object.keys(categoryMeta);
-  const allPages: Array<{ params: { category: string }; props: { page: any } }> = [];
+  const articles = await getCollection(category);
+  const allPages = [];
 
   for (const category of categories) {
     const articles = await getCollection(category, ({ data }) => data);
