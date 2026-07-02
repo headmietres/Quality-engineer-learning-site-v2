@@ -2,7 +2,7 @@
 title: "SPC深度应用：控制图选择、判异规则与过程能力联动"
 date: 2026-07-05
 author: "QE Learning 编辑部"
-category: "quality-tool"
+category: "quality-tools"
 tags: ["SPC", "质量工具", "PQE"]
 description: "本文以 AIAG SPC 手册和工业实践为基础，系统解析控制图选择逻辑、判异规则全集，以及 SPC 与过程能力分析的深度联动，帮助质量人员从“会用”迈向“精通”。"
 ---
